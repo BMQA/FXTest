@@ -26,7 +26,6 @@
 ### 7.测试用例执行后，测试结果保存在redis里面。(实现，存24小时)
  
 ## [其他版本更新日志](https://github.com/liwanlei/FXTest/blob/master/versions.md)
-# 有问题可以联系我：QQ:952943386 email:leileili126@163.com  qq群：194704520  python测试开发群：683894834
 #   flask部署相关文章：http://www.cnblogs.com/leiziv5/p/7137277.html
 #                     http://www.cnblogs.com/leiziv5/p/8807135.html
 # 友情推荐本人其他开源代码：

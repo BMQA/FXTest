@@ -4,4 +4,4 @@
 @time: 2018/1/31 13:19 
 """
 from  app.case.views import case
-from  app.case import  views,urls
+from  app.case import views, urls

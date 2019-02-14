@@ -3,91 +3,109 @@
 @file: views.py
 @time: 2017/7/13 16:42
 """
-from app import  app
-from  flask import  request,render_template,\
-    make_response,send_from_directory,jsonify
+from app import app
+from  flask import request, render_template, \
+    make_response, send_from_directory, jsonify
 from  app.models import *
 import os
 from flask.views import MethodView
 from flask_login import login_required
+
+
 def get_pro_mo():
-    projects=Project.query.filter_by(status=False).all()
-    model=Model.query.filter_by(status=False).all()
-    return  projects,model
-@app.route('/down_jiekou',methods=['GET'])
+    projects = Project.query.filter_by(status=False).all()
+    model = Model.query.filter_by(status=False).all()
+    return projects, model
+
+
+@app.route('/down_jiekou', methods=['GET'])
 @login_required
 def down_jiekou():
     basedir = os.path.abspath(os.path.dirname(__file__))
-    file_dir=os.path.join(basedir,'upload')
-    response=make_response(send_from_directory(file_dir,'interface.xlsx',as_attachment=True))
+    file_dir = os.path.join(basedir, 'upload')
+    response = make_response(send_from_directory(file_dir, 'interface.xlsx', as_attachment=True))
     return response
-@app.route('/down_case',methods=['GET'])
+
+
+@app.route('/down_case', methods=['GET'])
 @login_required
 def down_case():
     basedir = os.path.abspath(os.path.dirname(__file__))
-    file_dir=os.path.join(basedir,'upload')
-    response=make_response(send_from_directory(file_dir,'interface_case.xlsx',as_attachment=True))
+    file_dir = os.path.join(basedir, 'upload')
+    response = make_response(send_from_directory(file_dir, 'interface_case.xlsx', as_attachment=True))
     return response
+
+
 class LoadView(MethodView):
     @login_required
-    def get(self,filename):
+    def get(self, filename):
         basedir = os.path.abspath(os.path.dirname(__file__))
-        file_dir=os.path.join(basedir,'upload')
-        response=make_response(send_from_directory(file_dir,filename,as_attachment=True))
+        file_dir = os.path.join(basedir, 'upload')
+        response = make_response(send_from_directory(file_dir, filename, as_attachment=True))
         return response
-@app.route('/gettest',methods=['POST'])
+
+
+@app.route('/gettest', methods=['POST'])
 @login_required
-def gettest():#ajax获取项目的测试用例
-    projec=(request.get_data('project')).decode('utf-8')
+def gettest():  # ajax获取项目的测试用例
+    projec = (request.get_data('project')).decode('utf-8')
     if not projec:
         return []
-    proje=Project.query.filter_by(project_name=str(projec)).first()
+    proje = Project.query.filter_by(project_name=str(projec)).first()
     if not proje:
-        return  []
-    testyong=InterfaceTest.query.filter_by(projects_id=proje.id).all()
-    testyong_list=[]
+        return []
+    testyong = InterfaceTest.query.filter_by(projects_id=proje.id).all()
+    testyong_list = []
     for i in testyong:
-        if i.status==True:
+        if i.status == True:
             continue
         else:
-            testyong_list.append({'name':i.Interface_name,'id':i.id})
-    return   jsonify({'data':testyong_list})
-@app.route('/getprojects',methods=['GET','POST'])
+            testyong_list.append({'name': i.Interface_name, 'id': i.id})
+    return jsonify({'data': testyong_list})
+
+
+@app.route('/getprojects', methods=['GET', 'POST'])
 @login_required
-def getprojects():#获取项目
+def getprojects():  # 获取项目
     id = request.get_data('id')
     if not id:
-        return jsonify({'msg':'没有发送数据','code':108})
-    peoject=InterfaceTest.query.filter_by(id=int(id)).first()
-    result=peoject.projects
-    projetc=Project.query.filter_by(project_name=str(result.project_name)).first()
-    testhuanjing=Interfacehuan.query.filter_by(projects=projetc,status=False).all()
-    if len(testhuanjing)<=0:
-        return jsonify({'msg': '没有找到测试环境','code':107,'data':str(result)})
-    url_list=[]
+        return jsonify({'msg': '没有发送数据', 'code': 108})
+    peoject = InterfaceTest.query.filter_by(id=int(id)).first()
+    result = peoject.projects
+    projetc = Project.query.filter_by(project_name=str(result.project_name)).first()
+    testhuanjing = Interfacehuan.query.filter_by(projects=projetc, status=False).all()
+    if len(testhuanjing) <= 0:
+        return jsonify({'msg': '没有找到测试环境', 'code': 107, 'data': str(result)})
+    url_list = []
     for huanjing in testhuanjing:
         url_list.append(huanjing.url)
-    if not  peoject:
-        return jsonify({'msg':'数据库找不到项目','code':109,'data':''})
-    return  jsonify({'data':str(result),'huanjing':url_list,'code':200,'msg':u'请求成功'})
-class Getyongli(MethodView):#获取用例
+    if not peoject:
+        return jsonify({'msg': '数据库找不到项目', 'code': 109, 'data': ''})
+    return jsonify({'data': str(result), 'huanjing': url_list, 'code': 200, 'msg': u'请求成功'})
+
+
+class Getyongli(MethodView):  # 获取用例
     @login_required
     def post(self):
         id = request.get_data('id')
-        project=id.decode('utf-8')
+        project = id.decode('utf-8')
         if not project:
-            return jsonify({'msg':'没有发送数据','code':8,'data':''})
-        peoject = Project.query.filter_by(project_name=project,status=False).first()
-        if not  peoject:
-            return jsonify({'msg': '数据库找不到项目', 'code': 9,'data':''})
-        tesatcaelist=InterfaceTest.query.filter_by(projects_id=peoject.id,status=False).all()
-        caselit=[]
+            return jsonify({'msg': '没有发送数据', 'code': 8, 'data': ''})
+        peoject = Project.query.filter_by(project_name=project, status=False).first()
+        if not peoject:
+            return jsonify({'msg': '数据库找不到项目', 'code': 9, 'data': ''})
+        tesatcaelist = InterfaceTest.query.filter_by(projects_id=peoject.id, status=False).all()
+        caselit = []
         for i in tesatcaelist:
             caselit.append(i.id)
-        return  jsonify({'code':200,'msg':'成功','data':(caselit)})
+        return jsonify({'code': 200, 'msg': '成功', 'data': (caselit)})
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html')
