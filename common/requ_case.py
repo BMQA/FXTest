@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-07-20 13:07:22
-# @Author  : lileilei
+# @Author  :
 '''
 接口请求封装后的使用模块
 调用类，传入url，请求方法，参数，请求headers，就可以进行请求，

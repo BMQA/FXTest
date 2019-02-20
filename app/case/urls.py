@@ -1,5 +1,5 @@
 """ 
-@author: lileilei
+@author:
 @file: urls.py 
 @time: 2018/1/31 13:20 
 """

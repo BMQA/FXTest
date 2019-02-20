@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-08-14 20:58:13
-# @Author  : lileilei
+# @Author  :
 '''
 判断是否是管理员
 '''

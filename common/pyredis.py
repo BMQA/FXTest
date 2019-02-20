@@ -1,5 +1,5 @@
 '''
-@author: lileilei
+@author:
 @file: pyredis.py
 @time: 2018/9/19 10:49
 '''

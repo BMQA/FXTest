@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : lileilei
+# @Author  :
 # @File    : views.py
 # @Time    : 2017/12/7 12:25
 from flask import Blueprint

@@ -1,5 +1,5 @@
 """ 
-@author: lileilei
+@author:
 @file: mysqldatabasecur.py 
 @time: 2018/3/9 15:46 
 """

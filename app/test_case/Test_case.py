@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-07-20 21:06:16
-# @Author  : lileilei
+# @Author  :
 '''封装多用例执行'''
 from common.requ_case import Api
 from common.panduan import assert_in

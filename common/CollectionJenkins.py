@@ -1,5 +1,5 @@
 '''
-@author: lileilei
+@author:
 @file: CollectionJenkins.py
 @time: 2018/8/17 9:45
 '''
@@ -10,7 +10,7 @@ import jenkins, requests
 from config import jenkins_password, jenkins_user, jenkins_url
 
 
-class Conlenct_jenkins(object):
+class Connect_jenkins(object):
     def __init__(self):
         self.jenkins_password = jenkins_password
         self.jenkins_user = jenkins_user

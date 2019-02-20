@@ -1,6 +1,6 @@
 # encoding: utf-8
 """
-@author: lileilei
+@author:
 @site: 
 @software: PyCharm
 @file: __init__.py.py
@@ -12,9 +12,9 @@ from flask_bootstrap import  Bootstrap
 from flask_login import LoginManager
 from config import lod
 from apscheduler.schedulers.background import BackgroundScheduler
-from  config import jobstores,executors
-from flask_admin import  Admin
-from  flask_moment import  Moment
+from config import jobstores, executors
+from flask_admin import Admin
+from flask_moment import Moment
 app=Flask(__name__)
 conf=lod()
 loginManager = LoginManager(app)

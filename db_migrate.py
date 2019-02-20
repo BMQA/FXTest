@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2017/7/13 20:54
-# @Author  :  lileilei
+# @Author  :
 # @File    : db_migrate.py
 '''数据库同步使用'''
 from flask_migrate import Migrate, MigrateCommand

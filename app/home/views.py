@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : lileilei
+# @Author  :
 # @File    : views.py
 # @Time    : 2017/12/7 9:23
 from flask import Blueprint, jsonify, flash
@@ -16,7 +16,7 @@ from app import loginManager, sched
 from config import PageShow
 from common.pagin_fen import fenye_list
 from common.fenye import Pagination
-from common.CollectionJenkins import Conlenct_jenkins
+from common.CollectionJenkins import Connect_jenkins
 
 
 def get_pro_mo():
@@ -664,7 +664,7 @@ class JenkinsFirst(MethodView):
     @login_required
     def get(self):
         # tasks=Task.query.filter_by(makeuser=current_user.id,status=False).all()
-        jobs = Conlenct_jenkins().get_all_job()
+        jobs = Connect_jenkins().get_all_job()
         jenkis_task = []
         for job in jobs:
             # for task in tasks:
@@ -677,7 +677,7 @@ class JenkinsFirst(MethodView):
 class JenkinsGou(MethodView):
     @login_required
     def get(self, jobname=''):
-        goujian = Conlenct_jenkins().build_job(jobname)
+        goujian = Connect_jenkins().build_job(jobname)
         if goujian == True:
             flash('构建成功！')
             return redirect(url_for('home.jenkinsfirst'))
@@ -693,7 +693,7 @@ class GetJenLogview(MethodView):
         url_base = (url.split('&')[0])
         jobname = url.split('&')[1]
         try:
-            log = Conlenct_jenkins().job_bulid_log(url_base, jobname)
+            log = Connect_jenkins().job_bulid_log(url_base, jobname)
             return jsonify({"code": 200, 'data': str(log)})
         except Exception as e:
             return jsonify({'code': 701, 'data': str(e)})

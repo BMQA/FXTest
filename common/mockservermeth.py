@@ -1,5 +1,5 @@
 """ 
-@author: lileilei
+@author:
 @file: parsenei.py 
 @time: 2018/3/14 16:17 
 """

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Author  : lileilei
+# @Author  :
 # @File    : __init__.py.py
 # @Time    : 2017/12/7 12:11
 from app.mock.views import mock

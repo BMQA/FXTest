@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2017/7/13 20:53
-# @Author  : lileilei
+# @Author  :
 # @File    : db_create.py
 '''创建数据库'''
 from app import db

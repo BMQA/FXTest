@@ -1,12 +1,12 @@
 """ 
-@author: lileilei
+@author:
 @file: admin.py 
 @time: 2018/3/21 9:54 
 """
 '''管理后台'''
-from  app import admin
+from app import admin
 from app.models import *
-from  flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla import ModelView
 
 
 class Useradmin(ModelView):

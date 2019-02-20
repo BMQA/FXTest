@@ -1,5 +1,5 @@
 """ 
-@author: lileilei
+@author:
 @file: hebinglist.py 
 @time: 2018/1/29 13:55 
 """

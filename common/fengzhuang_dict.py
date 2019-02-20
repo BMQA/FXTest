@@ -1,5 +1,5 @@
 """ 
-@author: lileilei
+@author:
 @file: python_dict.py 
 @time: 2018/6/15 13:54 
 """

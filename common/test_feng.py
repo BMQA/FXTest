@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-07-20 15:13:25
-# @Author  : lileilei
+# @Author  :
 '''
 requets模块的简单的封装
 '''

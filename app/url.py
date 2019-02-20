@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-08-09 20:05:32
-# @Author  : lileilei
+# @Author  :
 '''url'''
 from app.views import *
 from app import app

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @Date    : 2017-07-20 12:51:06
-# @Author  : lileilei
+# @Author  :
 """
 日志模块，
 这里会记录测试的日志。

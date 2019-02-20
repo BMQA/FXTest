@@ -1,6 +1,6 @@
 # encoding: utf-8
 """
-@author: lileilei
+@author:
 @file: py_html.py
 @time: 2017/6/5 17:04
 """
@@ -72,7 +72,7 @@ def time(starttime, endtime, passge, fail, excepts, yuqi, weizhi, maxs, mins, pi
 			   </tr> 
 			   </tbody></table>
 			   </div> ''' % (
-    starttime, endtime, (endtime - starttime), passge, fail, excepts, yuqi, weizhi, maxs, mins, pingluns)
+        starttime, endtime, (endtime - starttime), passge, fail, excepts, yuqi, weizhi, maxs, mins, pingluns)
     return beijing
 
 
@@ -186,8 +186,8 @@ def relust(titles, starttime, endtime, passge, fail, id: list, name: list, heade
             else:
                 clazz = 'error'
             relus += (
-            ceshixiangqing(clazz, id[i], name[i], coneent=coneent[i], url=url[i], headers=headers[i], meth=meth[i],
-                           yuqi=yuqi[i], json=json[i], relust=relust[i]))
+                ceshixiangqing(clazz, id[i], name[i], coneent=coneent[i], url=url[i], headers=headers[i], meth=meth[i],
+                               yuqi=yuqi[i], json=json[i], relust=relust[i]))
         text = title(titles) + connent + time(starttime, endtime, passge, fail, excepts, yuqis, weizhi, maxs, mins,
                                               pingluns) + shanghai + relus + weibu
     else:
