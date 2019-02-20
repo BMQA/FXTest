@@ -252,7 +252,7 @@ class AddtimingtaskView(MethodView):
         task_time = {'type': 'cron', 'day_of_week': data['week'],
                      'hour': data['hour'], 'minute': data['minx']}
         taskname_is = Task.query.filter_by(taskname=data['taskname']).first()
-        testevent = Interfacehuan.query.filter_by(url=data['testevent']).first()
+        testevent = InterfaceEnv.query.filter_by(url=data['testevent']).first()
         if not testevent:
             return jsonify({'code': 22, 'msg': '任务的测试环境不存在', 'data': ''})
         if taskname_is:
@@ -359,7 +359,7 @@ class GettesView(MethodView):
             return jsonify({"code": 26, 'msg': '项目查询不到', 'data': ''})
         if changpr.status == True:
             return jsonify({"code": 27, 'msg': '项目已经删除或者冻结', 'data': ''})
-        testevent = Interfacehuan.query.filter_by(projects=changpr, status=False).all()
+        testevent = InterfaceEnv.query.filter_by(projects=changpr, status=False).all()
         testeventlist = []
         for testeven in testevent:
             testeventlist.append({"url": testeven.url})

@@ -9,10 +9,10 @@ import os
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 
-jenkins_url = 'http://localhost:8080'  # jenkins的地址
-jenkins_user = 'liwanlei'  # jenkins的用户名
-jenkins_password = '123456'  # jenkins的密码
-xitong_request_toke = 'Fetext_token_system'  # 系统内部依赖接口请求的时候需要加个token来区分
+jenkins_url = 'http://192.168.1.120:8080/'  # jenkins的地址
+jenkins_user = 'admin'  # jenkins的用户名
+jenkins_password = '1'  # jenkins的密码
+system_request_toke = 'Fetext_token_system'  # 系统内部依赖接口请求的时候需要加个token来区分
 Try_Num_Case = 5  # 重试的次数
 Interface_Time_Out = 5000  # 超时时间
 redis_password = '123456'

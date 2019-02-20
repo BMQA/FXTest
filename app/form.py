@@ -1,17 +1,16 @@
 # encoding: utf-8
 """
-@author:
+form表单
 @file: form.py
 @time: 2017/7/13 16:42
 """
-'''form表单'''
 from flask_wtf import Form
 from wtforms import StringField, validators, PasswordField, SelectField
 from wtforms.validators import Email
-from app.models import Work
+from app.models import Title
 
 choice_list = []
-work_list = Work.query.all()
+work_list = Title.query.all()
 choice_l = [(1, '否'), (2, '是')]
 for i in range(len(work_list)):
     choice_list.append((work_list[i].id, work_list[i].name))

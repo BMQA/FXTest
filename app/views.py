@@ -73,7 +73,7 @@ def getprojects():  # 获取项目
     peoject = InterfaceTest.query.filter_by(id=int(id)).first()
     result = peoject.projects
     projetc = Project.query.filter_by(project_name=str(result.project_name)).first()
-    testhuanjing = Interfacehuan.query.filter_by(projects=projetc, status=False).all()
+    testhuanjing = InterfaceEnv.query.filter_by(projects=projetc, status=False).all()
     if len(testhuanjing) <= 0:
         return jsonify({'msg': '没有找到测试环境', 'code': 107, 'data': str(result)})
     url_list = []

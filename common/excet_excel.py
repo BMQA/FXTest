@@ -57,11 +57,14 @@ def create_interface(filename: str, interfacelist: list):
             table.write(i + 1, 0, str(interfacelist[i].id), style=stylen)
             table.write(i + 1, 1, str(interfacelist[i].projects), style=stylen)
             table.write(i + 1, 2, str(interfacelist[i].models), style=stylen)
-            table.write(i + 1, 3, interfacelist[i].Interface_name, style=stylen)
+            table.write(
+                i + 1, 3, interfacelist[i].Interface_name, style=stylen)
             table.write(i + 1, 4, interfacelist[i].Interface_url, style=stylen)
             table.write(i + 1, 5, interfacelist[i].interfacetype, style=stylen)
-            table.write(i + 1, 6, interfacelist[i].Interface_headers, style=stylen)
-            table.write(i + 1, 7, interfacelist[i].Interface_meth, style=stylen)
+            table.write(
+                i + 1, 6, interfacelist[i].Interface_headers, style=stylen)
+            table.write(
+                i + 1, 7, interfacelist[i].Interface_meth, style=stylen)
             # table.write(i + 1, 8, interfacelist[i].Interface_par, style=stylen)
             # table.write(i + 1, 9, interfacelist[i].Interface_back, style=stylen)
             table.write(i + 1, 8, str(interfacelist[i].users), style=stylen)

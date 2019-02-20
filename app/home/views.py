@@ -14,6 +14,7 @@ from flask.views import MethodView
 from flask_login import login_required, login_user, logout_user, current_user
 from app import loginManager, sched
 from config import PageShow
+from config import jenkins_url
 from common.pagin_fen import fenye_list
 from common.fenye import Pagination
 from common.CollectionJenkins import Connect_jenkins
@@ -200,7 +201,7 @@ class YongliView(MethodView):
 class AdminuserView(MethodView):
     @login_required
     def get(self):
-        wrok = Work.query.all()
+        wrok = Title.query.all()
         projects = Project.query.filter_by(status=False).all()
         if current_user.is_sper == True:
             pagination = (User.query.order_by('-id').all())
@@ -232,7 +233,7 @@ class AdminuserView(MethodView):
         emai = User.query.filter_by(user_email=str(email)).first()
         if emai:
             return jsonify({'data': '邮箱已经存在！请选个邮箱!', 'code': 11})
-        wrok = Work.query.filter_by(name=work).first()
+        wrok = Title.query.filter_by(name=work).first()
         new_user = User(username=name, user_email=email)
         new_user.set_password(password)
         new_user.work_id = wrok.id
@@ -454,14 +455,14 @@ class TesteventVies(MethodView):
     def get(self, page=1):
         if current_user.is_sper == True:
             events = []
-            events.append(Interfacehuan.query.filter_by(status=False).order_by('-id').all())
+            events.append(InterfaceEnv.query.filter_by(status=False).order_by('-id').all())
         else:
             events = []
             id = []
             for project in current_user.quanxians:
                 if (project.projects.id in id) == False:
                     events.append(
-                        Interfacehuan.query.filter_by(project=project.projects.id, status=False).order_by('-id').all())
+                        InterfaceEnv.query.filter_by(project=project.projects.id, status=False).order_by('-id').all())
                     id.append(project.projects.id)
         projects_lsit = fenye_list(Ob_list=events, split=PageShow)
         pages = range(1, len(projects_lsit) + 1)
@@ -481,7 +482,7 @@ class TesteventVies(MethodView):
     @login_required
     def delete(self):
         data = request.data.decode('utf-8')
-        event = Interfacehuan.query.filter_by(id=data).first()
+        event = InterfaceEnv.query.filter_by(id=data).first()
         event.status = True
         try:
             db.session.commit()
@@ -501,13 +502,13 @@ class TesteventVies(MethodView):
         port = json_data['port']
         usernmae = json_data['username']
         password = json_data['password']
-        url_old = Interfacehuan.query.filter_by(url=str(url)).first()
+        url_old = InterfaceEnv.query.filter_by(url=str(url)).first()
         if url_old:
             return jsonify({"msg": u'测试环境必须是相互独立的', "code": 209, 'data': ''})
         prkcyt = Project.query.filter_by(project_name=project).first()
-        end = Interfacehuan(url=url, desc=desc, project=prkcyt.id, database=name,
-                            databaseuser=usernmae, databasepassword=password, dbhost=host,
-                            dbport=port, make_user=current_user.id)
+        end = InterfaceEnv(url=url, desc=desc, project=prkcyt.id, database=name,
+                           databaseuser=usernmae, databasepassword=password, dbhost=host,
+                           dbport=port, make_user=current_user.id)
         db.session.add(end)
         try:
             db.session.commit()
@@ -530,11 +531,11 @@ class TesteventVies(MethodView):
         usernmae = json_data['username']
         password = json_data['password']
         project = Project.query.filter_by(project_name=project).first()
-        event = Interfacehuan.query.filter_by(id=id).first()
+        event = InterfaceEnv.query.filter_by(id=id).first()
         if not event:
-            end = Interfacehuan(url=url, desc=desc, project=project.id, database=name,
-                                databaseuser=usernmae, databasepassword=password, dbhost=host,
-                                dbport=port, make_user=current_user.id)
+            end = InterfaceEnv(url=url, desc=desc, project=project.id, database=name,
+                               databaseuser=usernmae, databasepassword=password, dbhost=host,
+                               dbport=port, make_user=current_user.id)
             db.session.add(end)
             db.session.commit()
             return jsonify({'data': '编辑成功', 'code': 2})
@@ -671,7 +672,7 @@ class JenkinsFirst(MethodView):
             #   if job['name']==task.taskname:
             jenkis_task.append({'name': job['name'], 'url': job['url'],
                                 'color': job['color']})
-        return render_template('home/jenkins.html', jobs=jenkis_task)
+        return render_template('home/jenkins.html', jobs=jenkis_task, jenkins_url=jenkins_url)
 
 
 class JenkinsGou(MethodView):

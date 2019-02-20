@@ -1,12 +1,11 @@
 # encoding: utf-8
 """
-@author:
 @file: manage.py
 @time: 2017/7/13 16:39
 """
 '''主运行文件，
 使用gevent异步请求，'''
-from  app import app
+from app import app
 from app import sched
 from app.home import home
 from app.mock import mock

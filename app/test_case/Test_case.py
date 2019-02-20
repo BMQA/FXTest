@@ -6,9 +6,9 @@ from common.requ_case import Api
 from common.panduan import assert_in
 from common.panduan import pare_result_mysql
 from common.log import log_t
-from app.models import InterfaceTest, TestcaseResult, Interfacehuan, mockforcase, Mockserver
+from app.models import InterfaceTest, TestcaseResult, InterfaceEnv, mockforcase, Mockserver
 from common.mysqldatabasecur import *
-from config import redis_host, redis_port, redis_save_result_db, save_duration, xitong_request_toke
+from config import redis_host, redis_port, redis_save_result_db, save_duration, system_request_toke
 from app import db
 from common.pyredis import ConRedisOper
 
@@ -56,7 +56,7 @@ class ApiTestCase():
     def testapi(self):
         for case in range(len(self.url)):
             self.log_can.info_log('%s：测试用例开始执行' % self.id[case])
-            testevent = Interfacehuan.query.filter_by(url=self.urltest, status=False).first()
+            testevent = InterfaceEnv.query.filter_by(url=self.urltest, status=False).first()
             if not testevent:
                 self.log_can.error_log('用例：%s执行失败！测试环境不存在' % (self.id[case]))
                 self.result_toal += 1
@@ -200,7 +200,7 @@ class ApiTestCase():
                             self.result_pf.append(u'mock不存在或者已删除')
                         try:
                             me = Api(url=me.path, fangshi=me.methods,
-                                     params=eval(me.params), headers={'token': xitong_request_toke})
+                                     params=eval(me.params), headers={'token': system_request_toke})
                             result = me.getJson()
                             da_ta = result[m_case.filed]
                             yuanlai[m_case.filed] = da_ta

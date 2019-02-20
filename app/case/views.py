@@ -3,9 +3,9 @@
 @file: view.py 
 @time: 2018/1/31 13:20 
 """
-from  flask import redirect, request, render_template, \
+from flask import redirect, request, render_template, \
     session, url_for, flash, jsonify, Blueprint, make_response, send_from_directory
-from  app.models import *
+from app.models import *
 from app.form import *
 from config import Dingtalk_access_token
 import os, time, datetime, json
@@ -21,7 +21,7 @@ from common.Dingtalk import send_ding
 from common.mysqldatabasecur import *
 from common.dubbo_feng import DubboInterface
 from config import Config_daoru_xianzhi, redis_host, redis_port, redis_save_result_db, save_duration, \
-    xitong_request_toke, test_fail_try_num
+    system_request_toke, test_fail_try_num
 from common.excet_excel import create_interface_case
 from common.hebinglist import listmax
 from common.pyredis import ConRedisOper
@@ -266,7 +266,7 @@ class SeryongliView(MethodView):
             return jsonify({'msg': '没有发送数据', 'code': 39})
         project_name = str(project['project'])
         project_is = Project.query.filter_by(project_name=project_name, status=False).first()
-        testevent = Interfacehuan.query.filter_by(projects=project_is, status=False).all()
+        testevent = InterfaceEnv.query.filter_by(projects=project_is, status=False).all()
         interfatype = project['interface_type']
         if interfatype == 'http':
             typeinterface = 'http'
@@ -314,14 +314,14 @@ class DaorucaseView(View):
                 yilai, yilai_ziduan, is_cha_data, data_sql, paser_base = paser_interface_case(filename)
                 if len(yilai) > Config_daoru_xianzhi:
                     flash(u'一次导入超过了系统的上限')
-                    return redirect(url_for('home.daoru_case'))
+                    return redirect(url_for('home.import_cases'))
                 try:
                     for i in range(len(jiekou_bianhao)):
                         projects_id = Project.query.filter_by(project_name=str(project_nam[i])).first()
                         model_id = Model.query.filter_by(model_name=str(model_nam[i])).first()
                         if projects_id is None or model_id is None:
                             flash(u'导入失败,项目或者模块不存在')
-                            return redirect(url_for('home.daoru_case'))
+                            return redirect(url_for('home.import_cases'))
                         if is_save_result[i] == '是':
                             save_reslt = True
                         elif is_save_result[i] == '否':
@@ -364,10 +364,10 @@ class DaorucaseView(View):
                 except Exception as e:
                     db.session.rollback()
                     flash(u'导入失败，原因：%s' % e)
-                    return render_template('daoru_case.html')
+                    return render_template('import_cases.html')
             flash(u'导入失败')
-            return render_template('daoru_case.html')
-        return render_template('daoru_case.html')
+            return render_template('import_cases.html')
+        return render_template('import_cases.html')
 
 
 class DuoyongliView(View):
@@ -432,7 +432,7 @@ class DuoyongliView(View):
             if (len(set(projecct_list))) > 1:
                 flash('目前单次只能执行一个项目')
                 return redirect(next or url_for('duoyongli'))
-            testevent = Interfacehuan.query.filter_by(url=testurl).first()
+            testevent = InterfaceEnv.query.filter_by(url=testurl).first()
             try:
                 apitest = ApiTestCase(inteface_url=Interface_url_list, inteface_meth=Interface_meth_list,
                                       inteface_parm=Interface_pase_list, inteface_assert=Interface_assert_list,
@@ -469,7 +469,7 @@ class DuoyongliView(View):
                                         password=email.send_email_password,
                                         smtp=email.stmp_email, port=email.port, fujian1=file, fujian2=filepath,
                                         subject=u'%s用例执行测试报告' % day, url='http://127.0.0.1:5000/test_rep')
-                        if m == False:
+                        if not m:
                             flash(u'发送邮件失败，请检查您默认的邮件设置是否正确')
                             return redirect(url_for('home.test_rep'))
                         flash(u'测试已经完成，并且给您默认设置发送了测试报告')
@@ -503,7 +503,7 @@ class MakeonlyoneCase(MethodView):
         projec = request.get_json()
         case_id = projec['caseid']
         url = projec['url']
-        testevent = Interfacehuan.query.filter_by(url=str(url)).first()
+        testevent = InterfaceEnv.query.filter_by(url=str(url)).first()
         if not testevent:
             return jsonify({'code': 41, 'msg': '请确定你所选择的测试环境是否真实存在！'})
         case = InterfaceTest.query.filter_by(id=int(case_id), status=False).first()
@@ -632,7 +632,7 @@ class MakeonlyoneCase(MethodView):
                         return jsonify({'code': 57, 'msg': '依赖的mock查不到或者已经删除'})
                     try:
                         me = Api(url=me.path, fangshi=me.methods,
-                                 params=eval(me.params), headers={'token': xitong_request_toke})
+                                 params=eval(me.params), headers={'token': system_request_toke})
                         result = me.getJson()
                         da_ta = result[m_case.filed]
                         data[m_case.filed] = da_ta

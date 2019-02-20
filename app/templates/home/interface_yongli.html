@@ -32,10 +32,10 @@
             </select>
             <form method="POST" action="{{url_for('case.duoyongli')}}">
                 <div style="margin-top: 10px">
-                    <a href="{{url_for('case.addtestcase')}}">
+                    <a href="{{url_for('case.add_testcase')}}">
                         <input type="button" name="" class="am-btn am-btn-default am-btn-success" value="添加用例">
                     </a>
-                    <a href="{{url_for('case.daoru_case')}}">
+                    <a href="{{url_for('case.import_cases')}}">
                         <input type="button" name="" class="am-btn am-btn-default am-btn-success" value="批量导入">
                     </a>
                     <button class="am-btn am-btn-default am-btn-success">批量执行</button>
@@ -81,9 +81,9 @@
             <input value="取消" type="button" class=" btn-default"  onclick="guanbi()" >
         </div>
     </div>
-    <div style="display:none;position:fixed;z-index: 210;width: 800px;top: 100px;left: 20%;box-shadow: 0 0 10px rgba(0,0,0,0.6);border: solid 1px #255c71;border-radius: 5px 5px 0 0;background-color: #9eacb4"  id="daochucase">
+    <div style="display:none;position:fixed;z-index: 210;width: 800px;top: 100px;left: 20%;box-shadow: 0 0 10px rgba(0,0,0,0.6);border: solid 1px #255c71;border-radius: 5px 5px 0 0;background-color: #9eacb4"  id="export_cases">
         <div style="height: 5px;">请选择导出测试用例的项目</div>
-        <form method="POST" action="{{url_for('case.daochucase')}}">
+        <form method="POST" action="{{url_for('case.export_cases')}}">
             <div style="background-color: whitesmoke;margin-top: 24px" >
                 选择导出的项目:
                 <select name="interface_type"  >
@@ -250,11 +250,11 @@
             })
         }
         function closeone() {
-            var  divshow=document.getElementById('daochucase');
+            var  divshow=document.getElementById('export_cases');
             divshow.style.display='none';
         }
         function dakai() {
-            var  divshow=document.getElementById('daochucase');
+            var  divshow=document.getElementById('export_cases');
             divshow.style.display='block';
         }
         function closeonecase() {

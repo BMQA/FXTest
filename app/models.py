@@ -59,11 +59,11 @@ class Role(db.Model):
         db.session.commit()
 
 
-class Work(db.Model):  # 岗位表
-    __tablename__ = 'works'
+class Title(db.Model):  # 岗位表
+    __tablename__ = 'titles'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(), unique=True)
-    user = db.relationship('User', backref='works', lazy='dynamic')
+    user = db.relationship('User', backref='titles', lazy='dynamic')
 
     def __repr__(self):
         return self.name
@@ -77,14 +77,14 @@ class User(db.Model):  # 用户表
     user_email = db.Column(db.String(64), unique=True)
     status = db.Column(db.Integer(), default=False)
     is_sper = db.Column(db.Integer(), default=False)
-    work_id = db.Column(db.Integer(), db.ForeignKey('works.id'))
+    work_id = db.Column(db.Integer(), db.ForeignKey('titles.id'))
     phone = db.relationship('TestResult', backref='users', lazy='dynamic')
     project = db.relationship('Project', backref='users', lazy='dynamic')
     model = db.relationship('Model', backref='users', lazy='dynamic')
     Interface = db.relationship('Interface', backref='users', lazy='dynamic')
     intfacecase = db.relationship('InterfaceTest', backref='users', lazy='dynamic')
     email = db.relationship('EmailReport', backref='users', lazy='dynamic')
-    huanjing = db.relationship('Interfacehuan', backref='users', lazy='dynamic')
+    huanjing = db.relationship('InterfaceEnv', backref='users', lazy='dynamic')
     mock = db.relationship('Mockserver', backref='users', lazy='dynamic')
     task = db.relationship('Task', backref='users', lazy='dynamic')
     paemase = db.relationship('Parameter', backref='users', lazy='dynamic')
@@ -204,7 +204,7 @@ class Project(db.Model):  # 项目
     TestResult = db.relationship('TestResult', backref='projects', lazy='dynamic')
     Interfacetest = db.relationship('InterfaceTest', backref='projects', lazy='dynamic')
     Interface = db.relationship('Interface', backref='projects', lazy='dynamic')
-    Interfacehuan = db.relationship('Interfacehuan', backref='projects', lazy='dynamic')
+    Interfacehuan = db.relationship('InterfaceEnv', backref='projects', lazy='dynamic')
     task = db.relationship('Task', backref='projects', lazy='dynamic')
     quanxian = db.relationship('Quanxian', backref='projects', lazy='dynamic')
     model = db.relationship('Model', backref='projects', lazy='dynamic')
@@ -245,7 +245,7 @@ class EmailReport(db.Model):
         return self.send_email
 
 
-class Interfacehuan(db.Model):  # 测试环境
+class InterfaceEnv(db.Model):  # 测试环境
     __tablename__ = 'ceshihuanjing'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     make_user = db.Column(db.Integer(), db.ForeignKey('users.id'))
