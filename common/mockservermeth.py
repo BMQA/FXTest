@@ -2,20 +2,19 @@
 @author:
 @file: parsenei.py 
 @time: 2018/3/14 16:17 
-"""
-'''
 mockserver封装,用于在提供mock服务的时候使用
 内部在headers里面加个token校验，获取不到token默认为外部请求，
 内部请求不会去校验headers，在系统内部的请求直接可以获取接口返回的参数。
-'''
-from  flask import request, abort, jsonify, make_response
+"""
+
+from flask import request, abort, jsonify, make_response
 from app.models import *
 from common.dict_com import comp_dict, dict_par
 import json
 
 
 def get_to_data(path):
-    huoqupath = Mockserver.query.filter_by(path=path, status=True).first()
+    huoqupath = MockServer.query.filter_by(path=path, status=True).first()
     if not huoqupath:
         abort(404)
     heders = request.headers

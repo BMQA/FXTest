@@ -22,14 +22,14 @@ mock = Blueprint('mock', __name__)
 class EditmockserView(MethodView):  # 编辑mack服务
     @login_required
     def get(self, id):
-        mock = Mockserver.query.filter_by(id=id, status=False).first()
+        mock = MockServer.query.filter_by(id=id, status=False).first()
         if not mock:
             flash(u'请重新选择编辑的mock')
             return redirect(url_for('home.mockserver'))
         return render_template('edit/editmock.html', mock=mock)
 
     def post(self, id):
-        mock = Mockserver.query.filter_by(id=id, status=False).first()
+        mock = MockServer.query.filter_by(id=id, status=False).first()
         if not mock:
             flash(u'请重新选择编辑的mock')
             return redirect(url_for('home.mockserver'))
@@ -101,7 +101,7 @@ class StartmockView(MethodView):  # 开启mock服务
     @login_required
     def get(self, id):
         next = request.headers.get('Referer')
-        start = Mockserver.query.filter_by(id=id, status=False).first()
+        start = MockServer.query.filter_by(id=id, status=False).first()
         if start:
             start.status = True
             try:
@@ -119,7 +119,7 @@ class ClosemockView(MethodView):  # 关闭mock服务
     @login_required
     def get(self, id):
         next = request.headers.get('Referer')
-        start = Mockserver.query.filter_by(id=id).first()
+        start = MockServer.query.filter_by(id=id).first()
         if start:
             start.status = False
             try:

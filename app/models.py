@@ -1,11 +1,4 @@
-# encoding: utf-8
-"""
-@author:
-@file: models.py
-@time: 2017/7/13 16:43
-"""
-'''数据库'''
-from  app import db
+from app import db
 import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -25,7 +18,7 @@ rely_case = db.Table('yilai',
                      db.Column('attred', db.String()))
 
 
-class Permisson:
+class Permisson(object):
     ADD = 0x01
     EDIT = 0x02
     DELETE = 0x04
@@ -85,7 +78,7 @@ class User(db.Model):  # 用户表
     intfacecase = db.relationship('InterfaceTest', backref='users', lazy='dynamic')
     email = db.relationship('EmailReport', backref='users', lazy='dynamic')
     huanjing = db.relationship('InterfaceEnv', backref='users', lazy='dynamic')
-    mock = db.relationship('Mockserver', backref='users', lazy='dynamic')
+    mock = db.relationship('MockServer', backref='users', lazy='dynamic')
     task = db.relationship('Task', backref='users', lazy='dynamic')
     paemase = db.relationship('Parameter', backref='users', lazy='dynamic')
     userpaemase = db.relationship('UserParmeter', backref='users', lazy='dynamic')
@@ -122,7 +115,7 @@ class Interface(db.Model):  # 接口表
     projects_id = db.Column(db.Integer(), db.ForeignKey('projects.id'))
     Interface_name = db.Column(db.String(252))
     Interface_url = db.Column(db.String(252))
-    Interface_meth = db.Column(db.String(252), default='GET')
+    interface_method = db.Column(db.String(252), default='GET')
     Interface_headers = db.Column(db.String(252))
     asynch = db.Column(db.Boolean(), default=False)
     timeout = db.Column(db.String(), nullable=True)
@@ -146,7 +139,7 @@ class InterfaceTest(db.Model):  # 测试用例表
     interface_type = db.Column(db.String(16))
     Interface_name = db.Column(db.String(252))
     Interface_url = db.Column(db.String(252))
-    Interface_meth = db.Column(db.String(252))
+    interface_method = db.Column(db.String(252))
     Interface_pase = db.Column(db.String(252))
     Interface_assert = db.Column(db.String(252))
     Interface_headers = db.Column(db.String(252))
@@ -204,7 +197,7 @@ class Project(db.Model):  # 项目
     TestResult = db.relationship('TestResult', backref='projects', lazy='dynamic')
     Interfacetest = db.relationship('InterfaceTest', backref='projects', lazy='dynamic')
     Interface = db.relationship('Interface', backref='projects', lazy='dynamic')
-    Interfacehuan = db.relationship('InterfaceEnv', backref='projects', lazy='dynamic')
+    InterfaceEnv = db.relationship('InterfaceEnv', backref='projects', lazy='dynamic')
     task = db.relationship('Task', backref='projects', lazy='dynamic')
     quanxian = db.relationship('Quanxian', backref='projects', lazy='dynamic')
     model = db.relationship('Model', backref='projects', lazy='dynamic')
@@ -267,7 +260,7 @@ class InterfaceEnv(db.Model):  # 测试环境
         return self.url
 
 
-class Mockserver(db.Model):  # mocksever
+class MockServer(db.Model):  # mocksever
     __tablename__ = 'mockserver'
     id = db.Column(db.Integer, primary_key=True)
     make_uers = db.Column(db.Integer(), db.ForeignKey('users.id'))  # 创建人

@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-# @Date    : 2017-07-18 13:26:17
-# @Author  :
-'''
-导入测试接口等封装
-'''
+# 导入测试接口等封装
 import xlrd
 
 
@@ -16,7 +11,7 @@ def pasre_inter(filename):  # 导入接口
     model_name = []
     interface_name = []
     interface_url = []
-    interface_meth = []
+    interface_method = []
     interface_par = []
     interface_header = []
     interface_bas = []
@@ -30,12 +25,12 @@ def pasre_inter(filename):  # 导入接口
         interface_url.append(me.cell(i, 4).value)
         interface_type.append(me.cell(i, 5).value)
         interface_header.append(me.cell(i, 6).value)
-        interface_meth.append(me.cell(i, 7).value)
+        interface_method.append(me.cell(i, 7).value)
         interface_par.append(me.cell(i, 8).value)
         interface_bas.append(me.cell(i, 9).value)
         i += 1
     return jiekou_bianhao, interface_name, project_name, model_name, interface_url, \
-           interface_header, interface_meth, interface_par, interface_bas, interface_type
+           interface_header, interface_method, interface_par, interface_bas, interface_type
 
 
 # 导入测试用例
@@ -48,7 +43,7 @@ def paser_interface_case(filename):
     model_name = []
     interface_name = []
     interface_url = []
-    interface_meth = []
+    interface_method = []
     interface_par = []
     interface_header = []
     interface_bas = []
@@ -69,7 +64,7 @@ def paser_interface_case(filename):
         interface_url.append(me.cell(i, 4).value)
         interface_type.append(me.cell(i, 5).value)
         interface_header.append(me.cell(i, 6).value)
-        interface_meth.append(me.cell(i, 7).value)
+        interface_method.append(me.cell(i, 7).value)
         interface_par.append(me.cell(i, 8).value)
         interface_bas.append(me.cell(i, 9).value)
         is_save_result.append(me.cell(i, 10).value)
@@ -81,5 +76,5 @@ def paser_interface_case(filename):
         paser_base.append(me.cell(i, 16).value)
         i += 1
     return jiekou_bianhao, interface_name, project_name, model_name, interface_url, \
-           interface_header, interface_meth, interface_par, interface_bas, interface_type, \
+           interface_header, interface_method, interface_par, interface_bas, interface_type, \
            is_save_result, yilai_is, yilai, yilai_ziduan, is_cha_data, data_sql, paser_base

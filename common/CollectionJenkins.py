@@ -1,12 +1,12 @@
-'''
+"""
 @author:
 @file: CollectionJenkins.py
 @time: 2018/8/17 9:45
-'''
-'''
-jenkins的链接
-'''
-import jenkins, requests
+连接jenkins
+"""
+
+import jenkins
+import requests
 from config import jenkins_password, jenkins_user, jenkins_url
 
 

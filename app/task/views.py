@@ -11,7 +11,7 @@ from app import loginManager, sched
 import time, os
 from common.py_html import createHtml
 from app.test_case.Test_case import ApiTestCase
-from  common.hebinglist import listmax
+from common.hebinglist import listmax
 from common.Dingtalk import send_ding
 from config import Dingtalk_access_token
 
@@ -24,8 +24,8 @@ def addtask(id):  # 定时任务执行的时候所用的函数
     starttime = datetime.datetime.now()
     star = time.time()
     day = time.strftime("%Y%m%d%H%M", time.localtime(time.time()))
-    pad = os.getcwd()
-    file_dir = pad + '/app/upload'
+    pwd = os.getcwd()
+    file_dir = pwd + '/app/upload'
     file = os.path.join(file_dir, (day + '.log'))
     if os.path.exists(file) is False:
         os.system('touch %s' % file)
@@ -36,7 +36,7 @@ def addtask(id):  # 定时任务执行的时候所用的函数
     model_list = []
     Interface_name_list = []
     Interface_url_list = []
-    Interface_meth_list = []
+    interface_method_list = []
     Interface_pase_list = []
     Interface_assert_list = []
     Interface_headers_list = []
@@ -56,7 +56,7 @@ def addtask(id):  # 定时任务执行的时候所用的函数
         Interface_msyql_ziduan_list.append(task_yongli.databaseziduan)
         Interface_url_list.append(task_yongli.Interface_url)
         Interface_name_list.append(task_yongli.Interface_name)
-        Interface_meth_list.append(task_yongli.Interface_meth)
+        interface_method_list.append(task_yongli.interface_method)
         Interface_pase_list.append(task_yongli.Interface_pase)
         Interface_assert_list.append(task_yongli.Interface_assert)
         Interface_headers_list.append(task_yongli.Interface_headers)
@@ -64,7 +64,7 @@ def addtask(id):  # 定时任务执行的时候所用的函数
         Interface_yilai_list.append(task_yongli.getattr_p)
         Interface_save_list.append(task_yongli.saveresult)
     testevent = task.testevent
-    apitest = ApiTestCase(inteface_url=Interface_url_list, inteface_meth=Interface_meth_list,
+    apitest = ApiTestCase(inteface_url=Interface_url_list, inteface_meth=interface_method_list,
                           inteface_parm=Interface_pase_list, inteface_assert=Interface_assert_list,
                           file=file, headers=Interface_headers_list, pid=Interface_pid_list,
                           is_database=Interface_is_data_list, data_mysql=Interface_mysql_list,
@@ -76,7 +76,7 @@ def addtask(id):  # 定时任务执行的时候所用的函数
     end = time.time()
     createHtml(titles=u'定时任务接口测试报告', filepath=filepath, starttime=starttime, endtime=endtime,
                passge=result_pass, fail=result_fail, id=id_list, name=projecct_list,
-               headers=Interface_headers_list, coneent=Interface_url_list, url=Interface_meth_list,
+               headers=Interface_headers_list, coneent=Interface_url_list, url=interface_method_list,
                meth=Interface_pase_list, yuqi=Interface_assert_list, json=bask_list, relusts=relusts,
                excepts=result_except, yuqis=result_cashu, weizhi=result_wei, maxs=large, mins=small, pingluns=pingjun)
     hour = end - star
@@ -110,7 +110,7 @@ def load_user(user_id):
 class TestforTaskView(MethodView):  # 为测试任务添加测试用例
     @login_required
     def get(self, id):
-        if current_user.is_sper == True:
+        if current_user.is_sper:
             projects = Project.query.filter_by(status=False).order_by('-id').all()
         else:
             projects = []

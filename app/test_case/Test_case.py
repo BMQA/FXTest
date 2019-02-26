@@ -6,7 +6,7 @@ from common.requ_case import Api
 from common.panduan import assert_in
 from common.panduan import pare_result_mysql
 from common.log import log_t
-from app.models import InterfaceTest, TestcaseResult, InterfaceEnv, mockforcase, Mockserver
+from app.models import InterfaceTest, TestcaseResult, InterfaceEnv, mockforcase, MockServer
 from common.mysqldatabasecur import *
 from config import redis_host, redis_port, redis_save_result_db, save_duration, system_request_toke
 from app import db
@@ -18,7 +18,7 @@ def save_reslut(key, value):
     m.sethase(key, value, save_duration)
 
 
-def get_reslut(key):
+def get_result(key):
     m = ConRedisOper(host=redis_host, port=redis_port, db=redis_save_result_db)
     reslit = m.getset(key)
     return reslit
@@ -190,7 +190,7 @@ class ApiTestCase():
                             self.spendlist.append('0')
                             self.bask_list.append('None')
                             self.result_pf.append(u'找不到mock依赖的')
-                        me = Mockserver.query.filter_by(id=m_case.mock, delete=False).first()
+                        me = MockServer.query.filter_by(id=m_case.mock, delete=False).first()
                         if not me:
                             testcase.Interface_is_tiaoshi = True
                             testcase.Interface_tiaoshi_shifou = True

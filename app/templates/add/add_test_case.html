@@ -24,7 +24,7 @@
                     </ul>
                 {% endif %}
             {% endwith %}
-            <form method="POST" action="{{url_for('case.add_testcase')}}">
+            <form method="POST" action="{{url_for('case.add_testcases')}}">
                 {{form.hidden_tag()}}
                 {{form.csrf_token}}
                 <div>
@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <strong>接口:</strong>
                         <select name="interface_name">
-                            {%for interfact in inrterface_list%}
+                            {%for interfact in interfaces%}
                             <option>{{interfact.Interface_name}}</option>
                             {%endfor%}
                         </select>
@@ -77,7 +77,7 @@
                     <span>&nbsp;</span>
                     <div class="form-group">
                         <strong>请求方式:</strong>
-                        {{ form.interface_meth(id='interfacemeth') }}
+                        {{ form.interface_method(id='interfacemeth') }}
                     </div>
                     <span>&nbsp;</span>
                     <div class="form-group" >

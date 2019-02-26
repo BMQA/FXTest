@@ -40,11 +40,11 @@ class Indexview(MethodView):
         for result in interface_result:
             result_list_case.append(result.case_id)
         all_run_case_count = len(set(result_list_case))
-        interface_list = []
+        interfaces = []
         for interface in range(len(interface_cont) + 1):
             try:
                 if interface_cont[interface].projects.status == False:
-                    interface_list.append(interface_cont[interface])
+                    interfaces.append(interface_cont[interface])
                 else:
                     interface += 1
             except:
@@ -80,7 +80,7 @@ class Indexview(MethodView):
         project_cout = Project.query.filter_by(status=False).count()
         model_cout = Model.query.filter_by(status=False).count()
         return render_template('home/index.html', yongli=len(case_list),
-                               jiekou=len(interface_list),
+                               jiekou=len(interfaces),
                                report=len(reslut_list), project_cout=project_cout,
                                model_cout=model_cout, my_tasl=My_task, all_run_case_count=all_run_case_count)
 
@@ -146,7 +146,7 @@ class InterfaceView(MethodView):
             new_interface = Interface(model_id=models_id, projects_id=project_id,
                                       Interface_name=name,
                                       Interface_url=url,
-                                      Interface_meth=meth,
+                                      interface_method=meth,
                                       Interface_user_id=current_user.id,
                                       Interface_headers=headers,
                                       interfacetype=xieyi)
@@ -559,7 +559,7 @@ class TesteventVies(MethodView):
 class MockViews(MethodView):
     @login_required
     def get(self, page=1):
-        mock = Mockserver.query.filter_by(delete=False).order_by('-id').paginate(page,
+        mock = MockServer.query.filter_by(delete=False).order_by('-id').paginate(page,
                                                                                  per_page=int(PageShow),
                                                                                  error_out=False)
         inter = mock.items
@@ -568,7 +568,7 @@ class MockViews(MethodView):
     @login_required
     def post(self):
         data_post = request.get_json()
-        name_is = Mockserver.query.filter_by(name=data_post['name']).first()
+        name_is = MockServer.query.filter_by(name=data_post['name']).first()
         if name_is:
             return jsonify({"code": 28, 'data': 'mockserver的名称不能重复'})
         if data_post['checkout'] == u'是':
@@ -583,7 +583,7 @@ class MockViews(MethodView):
             is_kaiqi = True
         else:
             is_kaiqi = False
-        new_mock = Mockserver(name=data_post['name'])
+        new_mock = MockServer(name=data_post['name'])
         new_mock.make_uers = current_user.id
         new_mock.path = data_post['path']
         new_mock.methods = data_post['meth']
@@ -607,7 +607,7 @@ class MockViews(MethodView):
     @login_required
     def delete(self):
         data = request.data.decode('utf-8')
-        ded = Mockserver.query.filter_by(id=data, status=False).first()
+        ded = MockServer.query.filter_by(id=data, status=False).first()
         if ded:
             ded.delete = True
             db.session.commit()

@@ -3,25 +3,25 @@
 @file: views.py 
 @time: 2018/1/31 13:31 
 """
-from  flask import redirect, request, \
+from flask import redirect, request, \
     render_template, session, url_for, flash, Blueprint, \
     jsonify, make_response, send_from_directory
-from  app.models import *
+from app.models import *
 from common.pares_excel_inter import pasre_inter
 from flask.views import MethodView, View
 from flask_login import login_required, current_user
 import json, os, time
-from  config import Config_daoru_xianzhi
-from  common.excet_excel import create_interface
-from  common.hebing import hebingDict
+from config import Config_daoru_xianzhi
+from common.excet_excel import create_interface
+from common.hebing import hebingDict
 
 interfac = Blueprint('interface', __name__)
 
 
-def get_pro_mo():
+def get_projects_and_models():
     projects = Project.query.filter_by(status=False).all()
-    model = Model.query.filter_by(status=False).all()
-    return projects, model
+    models = Model.query.filter_by(status=False).all()
+    return projects, models
 
 
 class EditInterfaceView(MethodView):
@@ -31,17 +31,17 @@ class EditInterfaceView(MethodView):
         if interface is None:
             flash(u'要编辑的测试用例不存在')
             return redirect(url_for('home.interface'))
-        if current_user.is_sper == True:
+        if current_user.is_sper:
             projects = Project.query.filter_by(status=False).order_by('-id').all()
         else:
             projects = []
             id = []
             for i in current_user.quanxians:
-                if (i.projects in id) == False:
-                    if i.projects.status == False:
+                if i.projects not in id:
+                    if not i.projects.status:
                         projects.append(i.projects)
                         id.append(i.projects)
-        project, models = get_pro_mo()
+        project, models = get_projects_and_models()
         return render_template('edit/edit_inter.html', interfac=interface, projects=projects, models=models)
 
     @login_required
@@ -50,7 +50,7 @@ class EditInterfaceView(MethodView):
         if interface is None:
             flash(u'要编辑的测试用例不存在')
             return redirect(url_for('home.interface'))
-        project, models = get_pro_mo()
+        project, models = get_projects_and_models()
         if current_user.is_sper == True:
             projects = Project.query.filter_by(status=False).order_by('-id').all()
         else:
@@ -78,7 +78,7 @@ class EditInterfaceView(MethodView):
         interface.Interface_name = intername
         interface.Interface_headers = headers
         interface.Interface_url = url
-        interface.Interface_meth = meth
+        interface.interface_method = meth
         interface.Interface_user_id = current_user.id
         interface.interfacetype = interfa_tey
         try:
@@ -102,8 +102,8 @@ class DaoruinterView(View):
                 filename = 'jiekou.xlsx'
                 file.save(filename)
                 jiekou_bianhao, project_nam, model_nam, interface_name, interface_url, interface_header, \
-                interface_meth, interface_par, interface_bas, interface_type = pasre_inter(filename)
-                if len(interface_meth) > Config_daoru_xianzhi:
+                interface_method, interface_par, interface_bas, interface_type = pasre_inter(filename)
+                if len(interface_method) > Config_daoru_xianzhi:
                     flash(u'系统目前支持的导入有限制，请分开导入')
                     return redirect(url_for('interface.daoru_inter'))
                 try:
@@ -120,7 +120,7 @@ class DaoruinterView(View):
                                                   Interface_name=str(interface_name[i]),
                                                   Interface_url=str(interface_url[i]),
                                                   Interface_headers=str(interface_header[i]),
-                                                  Interface_meth=str(interface_meth[i]),
+                                                  interface_method=str(interface_method[i]),
                                                   Interface_par=(interface_par[i]),
                                                   Interface_back=str(interface_bas[i]),
                                                   Interface_user_id=User.query.filter_by(
@@ -163,7 +163,7 @@ class SerinterView(MethodView):
             interfaclists.append({'model_id': interface.models.model_name,
                                   'projects_id': interface.projects.project_name,
                                   'id': interface.id, 'Interface_url': interface.Interface_url,
-                                  'Interface_meth': interface.Interface_meth,
+                                  'interface_method': interface.interface_method,
                                   'Interface_headers': interface.Interface_headers,
                                   'Interface_name': interface.Interface_name})
         return jsonify(({'msg': u'成功', 'code': 200, 'data': interfaclists, 'typeinter': typeinterface}))
@@ -177,14 +177,14 @@ class DaochuInterfa(MethodView):
         if project_case is None:
             flash(u'你选择导出接口的项目不存在')
             return redirect(url_for('home.interface'))
-        interface_list = Interface.query.filter_by(projects_id=project_case.id, status=False).all()
-        pad = os.getcwd()
+        interfaces = Interface.query.filter_by(projects_id=project_case.id, status=False).all()
+        pwd = os.getcwd()
         day = time.strftime("%Y%m", time.localtime(time.time()))
-        file_dir = pad + '/app/upload'
+        file_dir = pwd + '/app/upload'
         file = os.path.join(file_dir, (day + '.xls'))
         if os.path.exists(file) is False:
             os.system('touch %s' % file)
-        result = create_interface(filename=file, interfacelist=interface_list)
+        result = create_interface(filename=file, interfacelist=interfaces)
         if result['code'] == 1:
             flash(u'导出失败！原因：%s' % result['error'])
             return redirect(url_for('home.interface'))

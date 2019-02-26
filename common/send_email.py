@@ -34,4 +34,5 @@ def send_emails(sender, receivers, password, smtp, port, fujian1, fujian2, subje
         smtpObj.sendmail(sender, receivers, message.as_string())
         return True
     except Exception as e:
+        
         return False

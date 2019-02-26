@@ -7,10 +7,6 @@ $ python db_migrate.py db upgrade
 $ python db_migrate.py db --help
 """
 
-
-
-
-
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from app import db, app

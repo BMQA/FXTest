@@ -29,21 +29,21 @@ from common.pyredis import ConRedisOper
 case = Blueprint('case', __name__)
 
 
-def save_reslut(key, value):
+def save_result(key, value):
     m = ConRedisOper(host=redis_host, port=redis_port, db=redis_save_result_db)
     m.sethase(key, value, save_duration)
 
 
-def get_reslut(key):
+def get_result(key):
     m = ConRedisOper(host=redis_host, port=redis_port, db=redis_save_result_db)
-    reslit = m.getset(key)
-    return reslit
+    results = m.getset(key)
+    return results
 
 
-def get_pro_mo():
+def get_projects_and_models():
     projects = Project.query.filter_by(status=False).all()
-    model = Model.query.filter_by(status=False).all()
-    return projects, model
+    models = Model.query.filter_by(status=False).all()
+    return projects, models
 
 
 class AddtestcaseView(View):
@@ -51,20 +51,19 @@ class AddtestcaseView(View):
 
     @login_required
     def dispatch_request(self):
-        form = Interface_yong_Form()
-        project, models = get_pro_mo()
-        inrterface_list = Interface.query.filter_by(status=False).all()
-        mock_yilai = Mockserver.query.filter_by(delete=False).all()
-        if current_user.is_sper == True:
-            projects = Project.query.filter_by(status=False).order_by('-id').all()
+        form = InterfaceTestCaseForm()
+        project, models = get_projects_and_models()
+        interfaces = Interface.query.filter_by(status=False).all()
+        mock_yilai = MockServer.query.filter_by(delete=False).all()
+        if current_user.is_sper:
+            projects = Project.query.filter_by(status=False).order_by('id').all()
         else:
             projects = []
-            id = []
-            for i in current_user.quanxians:
-                if (i.projects in id) == False:
-                    if i.projects.status == False:
-                        projects.append(i.projects)
-                        id.append(i.projects)
+            ids = []
+            for role in current_user.quanxians:
+                if role.projects not in ids and i.projects.status is False:
+                    projects.append(i.projects)
+                    ids.append(i.projects)
         if request.method == 'POST' and form.validate_on_submit:
             save = request.form.get('save')
             yongli_nam = request.form.get('project')
@@ -72,7 +71,7 @@ class AddtestcaseView(View):
             interface_name = request.form.get('interface_name')
             interface_url = request.form.get('interface_url')
             interface_header = request.form.get('interface_headers')
-            interface_meth = request.form.get('interface_meth')
+            interface_method = request.form.get('interface_method')
             interface_can = request.form.get('interface_can')
             interface_re = request.form.get('interface_rest')
             yilai_data = request.values.get("yilaicanshu")
@@ -97,12 +96,12 @@ class AddtestcaseView(View):
                 if yilai_data is None or yilai_data == '':
                     flash(u'选择依赖后必须填写获取依赖的接口的字段')
                     return render_template('add/add_test_case.html', form=form, projects=projects, models=models,
-                                           inrterface_list=inrterface_list, mock_yilai=mock_yilai)
+                                           interfaces=interfaces, mock_yilai=mock_yilai)
                 yilai_dat = yilai_data
-            if yongli_nam == '' or mode == '' or interface_header == '' or interface_url == '' or interface_meth == '':
+            if yongli_nam == '' or mode == '' or interface_header == '' or interface_url == '' or interface_method == '':
                 flash(u'请准确填写用例的各项信息')
                 return render_template('add/add_test_case.html', form=form, projects=projects, models=models,
-                                       inrterface_list=inrterface_list, mock_yilai=mock_yilai)
+                                       interfaces=interfaces, mock_yilai=mock_yilai)
             project_id = Project.query.filter_by(project_name=yongli_nam).first().id
             models_id = Model.query.filter_by(model_name=mode).first().id
             interface = Interface.query.filter_by(Interface_name=interface_name).first().id
@@ -113,12 +112,12 @@ class AddtestcaseView(View):
             else:
                 flash(u'选择保存测试结果出现异常')
                 return render_template('add/add_test_case.html', form=form, projects=projects, mock_yilai=mock_yilai,
-                                       models=models, inrterface_list=inrterface_list)
+                                       models=models, interfaces=interfaces)
 
             try:
                 newcase = InterfaceTest(projects_id=project_id, model_id=models_id, interface_id=interface,
                                         Interface_headers=interface_header, bian_num=interface_url,
-                                        Interface_meth=interface_meth, Interface_pase=interface_can,
+                                        interface_method=interface_method, Interface_pase=interface_can,
                                         Interface_assert=interface_re, Interface_user_id=current_user.id,
                                         saveresult=saves, pid=(yilai_tes), getattr_p=yilai_dat,
                                         is_database=is_database, chaxunshujuku=databasesql,
@@ -130,7 +129,7 @@ class AddtestcaseView(View):
                 if mock == "选择依赖mock":
                     pass
                 else:
-                    is_mock = Mockserver.query.filter_by(path=mock, delete=False).first()
+                    is_mock = MockServer.query.filter_by(path=mock, delete=False).first()
                     m = mockforcase(case=newcase.id, mock=is_mock.id, filed=mockdata)
                     newcase.rely_mock = True
                     db.session.add(m)
@@ -142,7 +141,7 @@ class AddtestcaseView(View):
                 flash(u'添加用例失败，原因是：%s' % e)
                 return redirect(url_for('home.yongli'))
         return render_template('add/add_test_case.html', form=form, projects=projects, models=models,
-                               inrterface_list=inrterface_list, mock_yilai=mock_yilai)
+                               interfaces=interfaces, mock_yilai=mock_yilai)
 
 
 class EditcaseView(View):
@@ -150,9 +149,9 @@ class EditcaseView(View):
 
     @login_required
     def dispatch_request(self, id):
-        project, models = get_pro_mo()
-        inrterface_list = Interface.query.filter_by(status=False).all()
-        mock_yilai = Mockserver.query.filter_by(delete=False).all()
+        project, models = get_projects_and_models()
+        interfaces = Interface.query.filter_by(status=False).all()
+        mock_yilai = MockServer.query.filter_by(delete=False).all()
         if current_user.is_sper == True:
             projects = Project.query.filter_by(status=False).order_by('-id').all()
         else:
@@ -200,13 +199,13 @@ class EditcaseView(View):
                     flash(u'选择依赖后必须填写获取依赖的接口的字段')
                     return render_template('edit/edit_case.html', edit=edit_case,
                                            projects=projects, models=models,
-                                           inerfacelist=inrterface_list, mock_yilai=mock_yilai)
+                                           inerfacelist=interfaces, mock_yilai=mock_yilai)
                 yilai_dat = yilai_data
             if yongli_nam == None or mode == None or url == '' or headers == '' or meth == '' or reque == '':
                 flash(u'请确定各项参数都正常填写')
                 return render_template('edit/edit_case.html', edit=edit_case, projects=projects,
                                        models=models,
-                                       inerfacelist=inrterface_list, mock_yilai=mock_yilai)
+                                       inerfacelist=interfaces, mock_yilai=mock_yilai)
             projects_id = Project.query.filter_by(project_name=yongli_nam).first().id
             model_id = Model.query.filter_by(model_name=mode).first().id
             interface = Interface.query.filter_by(Interface_name=inerfa).first().id
@@ -218,13 +217,13 @@ class EditcaseView(View):
                 flash(u'选择保存测试用例异常')
                 return render_template('edit/edit_case.html',
                                        edit=edit_case, projects=projects, models=models,
-                                       inerfacelist=inrterface_list, mock_yilai=mock_yilai)
+                                       inerfacelist=interfaces, mock_yilai=mock_yilai)
             edit_case.projects_id = projects_id
             edit_case.model_id = model_id
             edit_case.interface_id = interface
             edit_case.bianhao = url
             edit_case.Interface_headers = headers
-            edit_case.Interface_meth = meth
+            edit_case.interface_method = meth
             edit_case.Interface_pase = parme
             edit_case.Interface_assert = reque
             edit_case.Interface_user_id = current_user.id
@@ -239,7 +238,7 @@ class EditcaseView(View):
                 if mock == "选择依赖mock":
                     pass
                 else:
-                    is_mock = Mockserver.query.filter_by(path=mock, delete=False).first()
+                    is_mock = MockServer.query.filter_by(path=mock, delete=False).first()
                     m = mockforcase(case=edit_case.id, mock=is_mock.id, filed=mockdata)
                     edit_case.rely_mock = True
                     db.session.add(m)
@@ -252,9 +251,9 @@ class EditcaseView(View):
                 flash(u'用例：%s 编辑失败，请重新编辑！' % id)
                 return render_template('edit/edit_case.html',
                                        edit=edit_case, projects=projects, models=models,
-                                       inerfacelist=inrterface_list, mock_yilai=mock_yilai)
+                                       inerfacelist=interfaces, mock_yilai=mock_yilai)
         return render_template('edit/edit_case.html', edit=edit_case, projects=projects,
-                               models=models, inerfacelist=inrterface_list, mock_yilai=mock_yilai)
+                               models=models, inerfacelist=interfaces, mock_yilai=mock_yilai)
 
 
 class SeryongliView(MethodView):
@@ -290,7 +289,7 @@ class SeryongliView(MethodView):
                                   'Interface_name': interface.Interface_name,
                                   'Interface_headers': interface.Interface_headers,
                                   'Interface_url': interface.Interface_url,
-                                  'Interface_meth': interface.Interface_meth,
+                                  'interface_method': interface.interface_method,
                                   'Interface_pase': interface.Interface_pase,
                                   'Interface_assert': interface.Interface_assert,
                                   'Interface_is_tiaoshi': interface.Interface_is_tiaoshi,
@@ -310,7 +309,7 @@ class DaorucaseView(View):
                 filename = 'jiekoucase.xlsx'
                 file.save(filename)
                 jiekou_bianhao, interface_name, project_nam, model_nam, interface_url, interfac_header, \
-                interface_meth, interface_par, interface_bas, interface_type, is_save_result, yilai_is, \
+                interface_method, interface_par, interface_bas, interface_type, is_save_result, yilai_is, \
                 yilai, yilai_ziduan, is_cha_data, data_sql, paser_base = paser_interface_case(filename)
                 if len(yilai) > Config_daoru_xianzhi:
                     flash(u'一次导入超过了系统的上限')
@@ -345,7 +344,7 @@ class DaorucaseView(View):
                                                       Interface_name=str(interface_name[i]),
                                                       Interface_url=str(interface_url[i]),
                                                       Interface_headers=interfac_header[i],
-                                                      Interface_meth=str(interface_meth[i]),
+                                                      interface_method=str(interface_method[i]),
                                                       interface_type=str(interface_type[i]),
                                                       Interface_pase=(interface_par[i]),
                                                       Interface_assert=str(interface_bas[i]),
@@ -379,8 +378,8 @@ class DuoyongliView(View):
         starttime = datetime.datetime.now()
         star = time.time()
         day = time.strftime("%Y%m%d%H%M", time.localtime(time.time()))
-        pad = os.getcwd()
-        file_dir = pad + '/app/upload'
+        pwd = os.getcwd()
+        file_dir = pwd + '/app/upload'
         file = os.path.join(file_dir, (day + '.log'))
         if os.path.exists(file) is False:
             os.system('touch %s' % file)
@@ -401,7 +400,7 @@ class DuoyongliView(View):
             model_list = []
             Interface_name_list = []
             Interface_url_list = []
-            Interface_meth_list = []
+            interface_method_list = []
             Interface_pase_list = []
             Interface_assert_list = []
             Interface_headers_list = []
@@ -422,7 +421,7 @@ class DuoyongliView(View):
                 model_list.append(case_one.models)
                 Interface_url_list.append(case_one.interfaces.Interface_url)
                 Interface_name_list.append(case_one.Interface_name)
-                Interface_meth_list.append(case_one.Interface_meth)
+                interface_method_list.append(case_one.interface_method)
                 Interface_pase_list.append(case_one.Interface_pase)
                 Interface_assert_list.append(case_one.Interface_assert)
                 Interface_headers_list.append(case_one.Interface_headers)
@@ -434,7 +433,7 @@ class DuoyongliView(View):
                 return redirect(next or url_for('duoyongli'))
             testevent = InterfaceEnv.query.filter_by(url=testurl).first()
             try:
-                apitest = ApiTestCase(inteface_url=Interface_url_list, inteface_meth=Interface_meth_list,
+                apitest = ApiTestCase(inteface_url=Interface_url_list, inteface_meth=interface_method_list,
                                       inteface_parm=Interface_pase_list, inteface_assert=Interface_assert_list,
                                       file=file, headers=Interface_headers_list, pid=Interface_pid_list,
                                       yilaidata=Interface_yilai_list, saveresult=Interface_save_list,
@@ -448,7 +447,7 @@ class DuoyongliView(View):
                 end = time.time()
                 createHtml(titles=u'接口测试报告', filepath=filepath, starttime=starttime, endtime=endtime,
                            passge=result_pass, fail=result_fail, id=id_list, name=projecct_list,
-                           headers=Interface_headers_list, coneent=Interface_url_list, url=Interface_meth_list,
+                           headers=Interface_headers_list, coneent=Interface_url_list, url=interface_method_list,
                            meth=Interface_pase_list, yuqi=Interface_assert_list, json=bask_list, relusts=relusts,
                            excepts=result_except, yuqis=result_cashu, weizhi=result_wei, maxs=large, mins=minx,
                            pingluns=pinglun)
@@ -508,16 +507,16 @@ class MakeonlyoneCase(MethodView):
             return jsonify({'code': 41, 'msg': '请确定你所选择的测试环境是否真实存在！'})
         case = InterfaceTest.query.filter_by(id=int(case_id), status=False).first()
         if not case:
-            return jsonify({'code': 42, 'msg': '请确定你要测试的用力是否存在！'})
+            return jsonify({'code': 42, 'msg': '请确定你要测试的用例是否存在！'})
         try:
             if case.interface_type == 'http':
                 if case.pid is not None and case.pid != 'None' and case.pid != '':
-                    tesyi = get_reslut(key=case.id + "&" + url)
+                    tesyi = get_result(key=case.id + "&" + url)
                     if tesyi is not None:
-                        canshu = case.getattr_p
+                        paramater = case.getattr_p
                         try:
                             testres = eval(tesyi.decode('utf-8'))
-                            yilaidata = eval(testres)[canshu]
+                            yilaidata = eval(testres)[paramater]
                         except Exception as e:
                             case.Interface_is_tiaoshi = True
                             case.Interface_tiaoshi_shifou = True
@@ -525,7 +524,7 @@ class MakeonlyoneCase(MethodView):
                             return jsonify({'code': 44, 'msg': '获取依赖数据失败，原因：%s' % e})
                         try:
                             pasrms = eval(case.Interface_pase)
-                            pasrms.update({canshu: yilaidata})
+                            pasrms.update({paramater: yilaidata})
                         except:
                             case.Interface_is_tiaoshi = True
                             case.Interface_tiaoshi_shifou = True
@@ -624,7 +623,7 @@ class MakeonlyoneCase(MethodView):
                         case.Interface_tiaoshi_shifou = True
                         db.session.commit()
                         return jsonify({'code': 57, 'msg': '依赖的mock查不到'})
-                    me = Mockserver.query.filter_by(id=m_case.mock, delete=False).first()
+                    me = MockServer.query.filter_by(id=m_case.mock, delete=False).first()
                     if not me:
                         case.Interface_is_tiaoshi = True
                         case.Interface_tiaoshi_shifou = True
@@ -641,7 +640,7 @@ class MakeonlyoneCase(MethodView):
                         case.Interface_tiaoshi_shifou = True
                         db.session.commit()
                         return jsonify({'code': 57, 'msg': '请求mock接口失败，原因：%s' % e})
-                me = Api(url=case.interface_id.Interface_url, fangshi=case.Interface_meth,
+                me = Api(url=case.interface_id.Interface_url, fangshi=case.interface_method,
                          params=data, headers=ne)
                 result = me.getJson()
                 spend = me.spend()
@@ -682,7 +681,7 @@ class MakeonlyoneCase(MethodView):
                     db.session.commit()
                     return jsonify({'code': 61, 'msg': '转化请求参数失败，原因：%s' % e})
                 dubboapi = DubboInterface(url=case.Interface_url, interface=case.Interface_pase,
-                                          method=case.Interface_meth,
+                                          method=case.interface_method,
                                           param=case.Interface_headers, **(data))
                 dubboapireslu = dubboapi.getresult()
                 if case.saveresult is True:
@@ -728,7 +727,7 @@ class MakeonlyoneCase(MethodView):
             return jsonify({'code': 63, 'msg': '接口测试出错了！原因:%s' % e})
 
 
-class DaochuCase(MethodView):
+class ExportCase(MethodView):
     @login_required
     def post(self):
         project = request.form.get('interface_type')
@@ -736,14 +735,14 @@ class DaochuCase(MethodView):
         if project_case is None:
             flash('你选择导出接口的项目不存在')
             return redirect(url_for('home.interface'))
-        interface_list = InterfaceTest.query.filter_by(projects_id=project_case.id, status=False).all()
-        pad = os.getcwd()
+        interfaces = InterfaceTest.query.filter_by(projects_id=project_case.id, status=False).all()
+        pwd = os.getcwd()
         day = time.strftime("%Y%m%d", time.localtime(time.time()))
-        file_dir = pad + '/app/upload'
+        file_dir = pwd + '/app/upload'
         file = os.path.join(file_dir, (day + '.xls'))
         if os.path.exists(file) is False:
             os.system('touch %s' % file)
-        result = create_interface_case(filename=file, caselist=interface_list)
+        result = create_interface_case(filename=file, caselist=interfaces)
         if result['code'] == 1:
             flash('导出接口失败！原因：%s' % result['error'])
             return redirect(url_for('home.yongli'))

@@ -7,7 +7,6 @@
 写入Excel,导入接口的可以用到
 '''
 import xlwt
-from xlwt import *
 
 
 def yangshi1():
@@ -64,7 +63,7 @@ def create_interface(filename: str, interfacelist: list):
             table.write(
                 i + 1, 6, interfacelist[i].Interface_headers, style=stylen)
             table.write(
-                i + 1, 7, interfacelist[i].Interface_meth, style=stylen)
+                i + 1, 7, interfacelist[i].interface_method, style=stylen)
             # table.write(i + 1, 8, interfacelist[i].Interface_par, style=stylen)
             # table.write(i + 1, 9, interfacelist[i].Interface_back, style=stylen)
             table.write(i + 1, 8, str(interfacelist[i].users), style=stylen)
@@ -117,7 +116,7 @@ def create_interface_case(filename: str, caselist: list):
             table.write(i + 1, 4, caselist[i].Interface_url, style=stylen)
             table.write(i + 1, 5, caselist[i].interface_type, style=stylen)
             table.write(i + 1, 6, caselist[i].Interface_headers, style=stylen)
-            table.write(i + 1, 7, caselist[i].Interface_meth, style=stylen)
+            table.write(i + 1, 7, caselist[i].interface_method, style=stylen)
             table.write(i + 1, 8, caselist[i].Interface_pase, style=stylen)
             table.write(i + 1, 9, caselist[i].Interface_assert, style=stylen)
             table.write(i + 1, 10, caselist[i].saveresult, style=stylen)
