@@ -1,4 +1,4 @@
-{%extends 'back.html' %}
+{%extends 'base.html' %}
 {%block hello%}
     <div class="tpl-content-wrapper" style="margin-top: -7px;">
         <div class="tpl-content-page-title">
@@ -24,7 +24,7 @@
                     </ul>
                 {% endif %}
             {% endwith %}
-            <form method="POST" action="{{url_for('case.add_testcases')}}">
+            <form method="POST" action="{{url_for('case.add_cases')}}">
                 {{form.hidden_tag()}}
                 {{form.csrf_token}}
                 <div>

@@ -9,6 +9,15 @@ import os
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 
+
+CRITICAL = 50
+FATAL = CRITICAL
+ERROR = 40
+WARNING = 30
+WARN = WARNING
+INFO = 20
+DEBUG = 10
+NOTSET = 0
 jenkins_url = 'http://192.168.1.120:8080/'  # jenkins的地址
 jenkins_user = 'admin'  # jenkins的用户名
 jenkins_password = '1'  # jenkins的密码

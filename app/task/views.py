@@ -125,7 +125,7 @@ class TestforTaskView(MethodView):  # 为测试任务添加测试用例
 
     @login_required
     def post(self, id):
-        if current_user.is_sper == True:
+        if current_user.is_sper:
             projects = Project.query.filter_by(status=False).order_by('-id').all()
         else:
             projects = []

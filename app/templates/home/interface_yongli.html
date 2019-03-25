@@ -1,4 +1,4 @@
-{% extends "back.html" %}
+{% extends "base.html" %}
 {% block hello %}
     {% import "fenye.html" as macros %}
     <div class="tpl-content-wrapper " style="margin-top: -7px;" >
@@ -32,7 +32,7 @@
             </select>
             <form method="POST" action="{{url_for('case.duoyongli')}}">
                 <div style="margin-top: 10px">
-                    <a href="{{url_for('case.add_testcases')}}">
+                    <a href="{{url_for('case.add_cases')}}">
                         <input type="button" name="" class="am-btn am-btn-default am-btn-success" value="添加用例">
                     </a>
                     <a href="{{url_for('case.import_cases')}}">

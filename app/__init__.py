@@ -1,4 +1,3 @@
-# encoding: utf-8
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
@@ -20,5 +19,5 @@ loginManager.login_message = u'测试平台必须登录，请登录！'
 db = SQLAlchemy(app)
 moment = Moment(app)
 sched = BackgroundScheduler(jobstores=jobstores, executors=executors)
-admin = Admin(app, name=u'质量管理系统后台')
+admin = Admin(app, name=u'质量管理系统后台', template_mode='bootstrap3')
 from app import views, models, url, apiadmin

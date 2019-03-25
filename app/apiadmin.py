@@ -1,4 +1,4 @@
-'''管理后台'''
+# 管理后台
 from app import admin
 from app.models import db, Task, Interface, InterfaceTest, MockServer, User
 from flask_admin.contrib.sqla import ModelView

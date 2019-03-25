@@ -6,7 +6,7 @@
 from app.case.views import *
 from app.case import case
 
-case.add_url_rule('/add_testcases', view_func=AddtestcaseView.as_view('add_testcases'))
+case.add_url_rule('/add_cases', view_func=AddtestcaseView.as_view('add_cases'))
 case.add_url_rule('/edit_case/<int:id>', view_func=EditcaseView.as_view('edit_case'))
 case.add_url_rule('/import_cases', view_func=DaorucaseView.as_view('import_cases'))
 case.add_url_rule('/ser_yongli', view_func=SeryongliView.as_view('ser_yongli'))

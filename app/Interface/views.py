@@ -132,10 +132,10 @@ class DaoruinterView(View):
                     return redirect(url_for('home.interface'))
                 except Exception as e:
                     flash(u'导入失败，请检查')
-                    return render_template('daoru.html')
+                    return render_template('import.html')
             flash(u'导入失败')
-            return render_template('daoru.html')
-        return render_template('daoru.html')
+            return render_template('import.html')
+        return render_template('import.html')
 
 
 class SerinterView(MethodView):
