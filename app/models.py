@@ -68,8 +68,9 @@ class User(db.Model):  # 用户表
     username = db.Column(db.String(63), unique=True)
     password = db.Column(db.String(252))
     user_email = db.Column(db.String(64), unique=True)
-    status = db.Column(db.Integer(), default=False)
-    is_sper = db.Column(db.Integer(), default=False)
+    status = db.Column(db.Boolean(), default=False)
+    is_login = db.Column(db.Boolean(), default=False)
+    is_sper = db.Column(db.Boolean(), default=False)
     work_id = db.Column(db.Integer(), db.ForeignKey('titles.id'))
     phone = db.relationship('TestResult', backref='users', lazy='dynamic')
     project = db.relationship('Project', backref='users', lazy='dynamic')
@@ -165,6 +166,24 @@ class InterfaceTest(db.Model):  # 测试用例表
 
     def __repr__(self):
         return self.Interface_name
+
+
+class Action(db.Model):
+    __tablename__ = 'actions'
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    user = db.Column(db.Integer(), db.ForeignKey("users.id"))
+    name = db.Column(db.String(252), unique=True, index=True, nullable=False)
+    style = db.Column(db.Integer(), default=0)  # 动作的类型，0是睡眠，1是sql，2.执行测试用例。3执行请求
+    sleepnum = db.Column(db.Integer())
+    sql = db.Column(db.String(252))
+    caseid = db.Column(db.Integer())
+    requestsurl = db.Column(db.String(252))
+    requestsparame = db.Column(db.String(252))
+    requestmethod = db.Column(db.String(8))
+    status = db.Column(db.Boolean(), default=False)
+
+    def __repr__(self):
+        return str(self.id)
 
 
 class TestResult(db.Model):  # 测试结果表
@@ -317,6 +336,27 @@ class Quanxian(db.Model):  # 权限表
         return str(self.id)
 
 
+class GeneralConfiguration(db.Model):
+    __tablename__ = "generalconfigurations"
+    id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
+    user = db.Column(db.Integer(), db.ForeignKey("users.id"))
+    addtime = db.Column(db.DateTime(), default=datetime.datetime.now())
+    name = db.Column(db.String(252), unique=True, index=True, nullable=False)
+    style = db.Column(db.Integer(), default=0)  # 通用配置，0 key-value  1，token 2.sql，3.http请求
+    key = db.Column(db.String(252))
+    token_parame = db.Column(db.String(252))
+    token_url = db.Column(db.String(252))
+    token_method = db.Column(db.String(16), default="POST")
+    sqlurl = db.Column(db.String(252))
+    request_url = db.Column(db.String(252))
+    request_parame = db.Column(db.String(252))
+    request_method = db.Column(db.String(252), default="GET")
+    testevent = db.Column(db.Integer(), db.ForeignKey("ceshihuanjing.id"), nullable=True)
+
+    def __repr__(self):
+        return str(self.id)
+
+
 class TestcaseResult(db.Model):  # 测试用例结果
     __tablename__ = 'testcaseresults'
     id = db.Column(db.Integer, primary_key=True)
@@ -346,29 +386,3 @@ class Parameter(db.Model):  # 参数
 
     def __repr__(self):
         return str(self.id)
-
-
-class UserParmeter(db.Model):
-    __tablename__ = 'userparmeters'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    parme = db.Column(db.String(252))  # 参数字段
-    value = db.Column(db.String(252))  # 参数的值
-    dingding = db.Column(db.String(252))  # 测试报告的钉钉的地址
-    try_num = db.Column(db.Integer(), nullable=True)  # 重试的次数
-    user = db.Column(db.Integer, db.ForeignKey('users.id'))
-    status = db.Column(db.Boolean(), default=False)
-
-    def __repr__(self):
-        return str(self.id)
-
-
-class mockforcase(db.Model):
-    __tablename__ = 'mockforcases'
-    id = db.Column(db.Integer, primary_key=True)
-    makeuser = db.Column(db.Integer(), db.ForeignKey('users.id'))  # 创建者
-    mock = db.Column(db.Integer(), db.ForeignKey('mockserver.id'))
-    case = db.Column(db.Integer(), db.ForeignKey('interfacetests.id'))
-    filed = db.Column(db.String(252))
-
-    def __repr__(self):
-        return self.taskname

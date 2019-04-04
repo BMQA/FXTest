@@ -61,7 +61,7 @@ class AddtestcaseView(View):
         interfaces = Interface.query.filter_by(status=False).all()
         mock_yilai = MockServer.query.filter_by(delete=False).all()
         if current_user.is_sper:
-            projects = Project.query.filter_by(status=False).order_by('id').all()
+            projects = Project.query.filter_by(status=False).order_by(Project.id.desc()).all()
         else:
             projects = []
             ids = []

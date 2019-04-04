@@ -15,7 +15,7 @@ from app.Interface import interfac
 from gevent.pywsgi import WSGIServer
 from gevent import monkey
 
-monkey.patch_all(thread=False)
+# monkey.patch_all(thread=False)
 app.register_blueprint(home)
 app.register_blueprint(mock)
 app.register_blueprint(task)

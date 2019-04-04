@@ -17,7 +17,7 @@ from config import PageShow
 from config import jenkins_url
 from common.pagin_fen import fenye_list
 from common.fenye import Pagination
-from common.CollectionJenkins import Connect_jenkins
+# from common.CollectionJenkins import Connect_jenkins
 
 
 def get_pro_mo():
